@@ -121,7 +121,40 @@ require('lazy').setup({
     build = ':TSUpdate',
   },
 
-  require 'kickstart.plugins.autoformat',
+  -- autoformatters
+  {
+    'stevearc/conform.nvim',
+    lazy = false,
+    opts = {
+      notify_on_error = false,
+      format_on_save = function(bufnr)
+        -- Disable "format_on_save lsp_fallback" for languages that don't
+        -- have a well standardized coding style. You can add additional
+        -- languages here or re-enable it for the disabled ones.
+        local disable_filetypes = {} -- { c = true, cpp = true }
+        return {
+          timeout_ms = 500,
+          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
+        }
+      end,
+      log_level = vim.log.levels.DEBUG,
+      formatters_by_ft = {
+        c = { 'clang-format' },
+        cpp = { 'clang-format' },
+        -- Use a sub-list to run only the first available formatter
+        javascript = { { "prettierd", "prettier" } },
+        lua = { 'stylua' },
+        -- Conform will run multiple formatters sequentially
+        python = { "isort", "black" },
+      },
+      formatters = {
+        ['clang-format'] = {
+           append_args = { "-fallback-style=none" },
+        }
+      },
+    },
+  },
+
   require 'kickstart.plugins.debug',
   require 'custom.plugins',
 }, {
