@@ -73,17 +73,22 @@ require('lazy').setup({
       },
       sections = {
         lualine_a = {
-          {'mode', fmt = function(str) return str:sub(1,1) end},
+          {
+            'mode',
+            fmt = function(str)
+              return str:sub(1, 1)
+            end,
+          },
         },
-        lualine_b = {'diff', 'diagnostics'},
+        lualine_b = { 'diff', 'diagnostics' },
         lualine_c = {
           {
             'filename',
             path = 1,
             shorting_target = 39,
-          }
-        }
-      }
+          },
+        },
+      },
     },
   },
 
@@ -108,7 +113,7 @@ require('lazy').setup({
           return vim.fn.executable 'make' == 1
         end,
       },
-      "nvim-telescope/telescope-live-grep-args.nvim",
+      'nvim-telescope/telescope-live-grep-args.nvim',
     },
   },
 
@@ -142,15 +147,15 @@ require('lazy').setup({
         c = { 'clang-format' },
         cpp = { 'clang-format' },
         -- Use a sub-list to run only the first available formatter
-        javascript = { { "prettierd", "prettier" } },
+        javascript = { { 'prettierd', 'prettier' } },
         lua = { 'stylua' },
         -- Conform will run multiple formatters sequentially
-        python = { "isort", "black" },
+        python = { 'isort', 'black' },
       },
       formatters = {
         ['clang-format'] = {
-           append_args = { "-fallback-style=none" },
-        }
+          append_args = { '-fallback-style=none' },
+        },
       },
     },
   },
@@ -160,8 +165,8 @@ require('lazy').setup({
 }, {
   dev = {
     -- directory where you store your local plugin projects
-    path = "~/devel",
-    patterns = {"nvim-solar-paper"},
+    path = '~/devel',
+    patterns = { 'nvim-solar-paper' },
     fallback = false, -- Fallback to git when local plugin doesn't exist,
   },
 })
@@ -224,15 +229,15 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
-local telescope = require('telescope')
-local lga_actions = require("telescope-live-grep-args.actions")
+local telescope = require 'telescope'
+local lga_actions = require 'telescope-live-grep-args.actions'
 
 telescope.setup {
   defaults = {
-    sorting_strategy = "ascending",
+    sorting_strategy = 'ascending',
     layout_config = {
       horizontal = {
-        prompt_position = "top",
+        prompt_position = 'top',
       },
     },
     mappings = {
@@ -247,7 +252,7 @@ telescope.setup {
       sort_lastused = true,
       mappings = {
         i = {
-          ["<c-d>"] = "delete_buffer",
+          ['<c-d>'] = 'delete_buffer',
         },
       },
     },
@@ -258,15 +263,15 @@ telescope.setup {
       auto_quoting = true, -- enable/disable auto-quoting
       mappings = { -- extend mappings
         i = {
-          ["<C-t>"] = lga_actions.quote_prompt(),
-          ["<C-g>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
+          ['<C-t>'] = lga_actions.quote_prompt(),
+          ['<C-g>'] = lga_actions.quote_prompt { postfix = ' --iglob ' },
         },
       },
-    }
-  }
+    },
+  },
 }
-telescope.load_extension("live_grep_args")
-telescope.load_extension("fzf")
+telescope.load_extension 'live_grep_args'
+telescope.load_extension 'fzf'
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -365,7 +370,7 @@ local servers = {
 }
 
 -- Setup neovim lua configuration
-require('neodev').setup({library = { plugins = { "nvim-dap-ui" }, types = true }})
+require('neodev').setup { library = { plugins = { 'nvim-dap-ui' }, types = true } }
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -376,13 +381,6 @@ local mason_lspconfig = require 'mason-lspconfig'
 
 mason_lspconfig.setup {
   ensure_installed = vim.tbl_keys(servers),
-}
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    servers[server_name].capabilities = capabilities
-    servers[server_name].on_attach = require('custom.lsp').on_attach
-    require('lspconfig')[server_name].setup(servers[server_name])
-  end
 }
 
 -- [[ Configure nvim-cmp ]]
