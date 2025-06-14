@@ -167,7 +167,7 @@ require('lazy').setup({
     -- directory where you store your local plugin projects
     path = '~/devel',
     patterns = { 'nvim-solar-paper' },
-    fallback = false, -- Fallback to git when local plugin doesn't exist,
+    fallback = 'SebastianZaha/nvim-solar-paper', -- when local plugin doesn't exist
   },
 })
 
