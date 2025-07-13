@@ -147,7 +147,7 @@ require('lazy').setup({
         c = { 'clang-format' },
         cpp = { 'clang-format' },
         -- Use a sub-list to run only the first available formatter
-        javascript = { { 'prettierd', 'prettier' } },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
         lua = { 'stylua' },
         -- Conform will run multiple formatters sequentially
         python = { 'isort', 'black' },
