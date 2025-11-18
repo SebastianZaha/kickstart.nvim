@@ -367,6 +367,17 @@ local servers = {
       },
     },
   },
+  pyright = {
+    settings = {
+      python = {
+        analysis = {
+          autoSearchPaths = true,
+          diagnosticMode = 'workspace',
+          useLibraryCodeForTypes = true,
+        },
+      },
+    },
+  },
 }
 
 -- Setup neovim lua configuration
@@ -382,6 +393,26 @@ local mason_lspconfig = require 'mason-lspconfig'
 mason_lspconfig.setup {
   ensure_installed = vim.tbl_keys(servers),
 }
+
+-- Setup each LSP server using the new vim.lsp.config API
+for server_name, server_config in pairs(servers) do
+  local config = vim.tbl_extend('force', {
+    name = server_name,
+    cmd = vim.lsp.config[server_name] and vim.lsp.config[server_name].cmd or { server_name },
+    root_markers = vim.lsp.config[server_name] and vim.lsp.config[server_name].root_markers or { '.git' },
+    capabilities = capabilities,
+  }, server_config)
+
+  vim.lsp.config[server_name] = config
+
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = config.filetypes or vim.lsp.config[server_name].filetypes or {},
+    callback = function(args)
+      vim.lsp.enable(server_name)
+      require('custom.lsp').on_attach(vim.lsp.get_clients({ bufnr = args.buf, name = server_name })[1], args.buf)
+    end,
+  })
+end
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`

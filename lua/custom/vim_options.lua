@@ -13,10 +13,10 @@ vim.o.relativenumber = true
 vim.o.diffopt = 'internal,filler,vertical,hiddenoff,closeoff,algorithm:patience'
 vim.o.splitbelow = true
 vim.o.splitright = true
--- !! this is overwritten from the lualine plugin. 
+-- !! this is overwritten from the lualine plugin.
 -- I keep it here for when I inevitably change or remove that plugin.
 vim.o.laststatus = 3
- -- I don't like folds
+-- I don't like folds
 vim.o.foldenable = false
 
 -- indenting and tabs related
@@ -34,11 +34,11 @@ vim.o.breakindentopt = 'shift:4'
 -- color related
 vim.o.termguicolors = true
 vim.o.cursorline = true
-vim.cmd("colorscheme solar-paper")
+-- vim.cmd("colorscheme solar-paper")
 
 -- just disable the annoying Ctrl-C bind in sql files.
 -- I'm using it to exit edit mode.
-vim.cmd([[ let g:ftplugin_sql_omni_key = '<C-ș>' ]])
+vim.cmd [[ let g:ftplugin_sql_omni_key = '<C-ș>' ]]
 
 -- terminal settings, startinsert on enter, Bdelete on exit
 
@@ -57,7 +57,7 @@ vim.api.nvim_create_autocmd('TermOpen', {
   end,
 })
 
-vim.api.nvim_create_autocmd({'BufWinEnter', 'WinEnter'}, {
+vim.api.nvim_create_autocmd({ 'BufWinEnter', 'WinEnter' }, {
   pattern = 'term://*',
   group = 'TerminalSetup',
   callback = function()
@@ -71,16 +71,15 @@ vim.api.nvim_create_autocmd('TermClose', {
   callback = function(event)
     vim.print(event)
     if not event.status then
-      vim.cmd('Bdelete')
+      vim.cmd 'Bdelete'
     end
-  end
+  end,
 })
 
+-- telescope
 
--- telescope 
-
-vim.api.nvim_create_autocmd("User", {
-  pattern = "TelescopePreviewerLoaded",
+vim.api.nvim_create_autocmd('User', {
+  pattern = 'TelescopePreviewerLoaded',
   callback = function(args)
     vim.wo.wrap = true
   end,
