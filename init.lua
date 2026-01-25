@@ -132,16 +132,8 @@ require('lazy').setup({
     lazy = false,
     opts = {
       notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = {} -- { c = true, cpp = true }
-        return {
-          timeout_ms = 500,
-          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
-        }
-      end,
+      -- format_on_save disabled - use :ConformFormat or <leader>cf to format manually
+      format_on_save = false,
       log_level = vim.log.levels.DEBUG,
       formatters_by_ft = {
         c = { 'clang-format' },
@@ -374,6 +366,28 @@ local servers = {
           autoSearchPaths = true,
           diagnosticMode = 'workspace',
           useLibraryCodeForTypes = true,
+        },
+      },
+    },
+  },
+  pylsp = {
+    -- Python LSP with rope for auto-imports
+    settings = {
+      pylsp = {
+        plugins = {
+          -- Disable overlapping features (let pyright handle these)
+          pycodestyle = { enabled = false },
+          mccabe = { enabled = false },
+          pyflakes = { enabled = false },
+          pylint = { enabled = false },
+          yapf = { enabled = false },
+          autopep8 = { enabled = false },
+          -- Enable rope for auto-imports and refactoring
+          rope_autoimport = {
+            enabled = true,
+            memory = true,
+          },
+          rope_completion = { enabled = true },
         },
       },
     },

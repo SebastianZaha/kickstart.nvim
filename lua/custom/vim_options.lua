@@ -34,7 +34,8 @@ vim.o.breakindentopt = 'shift:4'
 -- color related
 vim.o.termguicolors = true
 vim.o.cursorline = true
--- vim.cmd("colorscheme solar-paper")
+vim.o.background = 'light'
+vim.cmd('colorscheme solar-paper')
 
 -- just disable the annoying Ctrl-C bind in sql files.
 -- I'm using it to exit edit mode.

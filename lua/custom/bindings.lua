@@ -1,6 +1,82 @@
 vim.keymap.set({'n', 'v'}, ';', ':')
 vim.keymap.set({'n', 'v'}, ':', ';')
 
+-- Floating cheatsheet
+vim.keymap.set('n', '<leader>?', function()
+  local lines = {
+    ' Keybindings Cheatsheet ',
+    '',
+    ' LSP ──────────────────────────────',
+    ' gd  definition    gr  references',
+    ' gD  declaration   gI  implementation',
+    ' K   hover         <C-k> signature',
+    ' <leader>rn rename    <leader>ca code action',
+    ' <leader>cf format    <leader>D  type def',
+    ' <leader>ds doc symbols  <leader>ws workspace symbols',
+    '',
+    ' Diagnostics ─────────────────────',
+    ' [d / ]d  prev/next diagnostic',
+    ' <leader>e  float    <leader>q  list',
+    '',
+    ' Git Hunks ───────────────────────',
+    ' [c / ]c  prev/next hunk',
+    ' <leader>hs stage    <leader>hr reset',
+    ' <leader>hp preview  <leader>hb blame',
+    ' <leader>tb toggle blame  <leader>td toggle deleted',
+    '',
+    ' Git ─────────────────────────────',
+    ' <leader>gs status   <leader>gd diff',
+    ' <leader>ga blame    <leader>gl log',
+    ' <leader>gp push     <leader>gw browse',
+    '',
+    ' Search (Telescope) ──────────────',
+    ' <leader>sf files    <leader>sg git files',
+    ' <leader>s/ grep     <leader>sw grep word',
+    ' <leader>sb buffers  <leader>s? recent',
+    ' <leader>sd diagnostics  <leader>sh help',
+    '',
+    ' Treesitter ──────────────────────',
+    ' af/if function  ac/ic class  aa/ia param',
+    ' ]m / [m  next/prev function',
+    ' ]] / [[  next/prev class',
+    ' <leader>a / A  swap param next/prev',
+    '',
+    ' Windows ─────────────────────────',
+    ' <C-w>s  split horizontal   <C-w>v  split vertical',
+    ' <A-h/j/k/l>  switch window (from any mode)',
+    ' <C-\\><C-n>  exit terminal mode',
+    '',
+    ' Yank ────────────────────────────',
+    ' <leader>yp  relative path   <leader>yP  full path',
+    ' <leader>yl  path:line (visual: path:start-end)',
+    '',
+    ' Misc ────────────────────────────',
+    ' <leader>ai  AI layout (claude + codex)',
+    '',
+    ' Press q or <Esc> to close ',
+  }
+
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+
+  local width = 60
+  local height = #lines
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative = 'editor',
+    width = width,
+    height = height,
+    col = (vim.o.columns - width) / 2,
+    row = (vim.o.lines - height) / 2,
+    style = 'minimal',
+    border = 'rounded',
+  })
+
+  vim.bo[buf].modifiable = false
+  vim.bo[buf].bufhidden = 'wipe'
+  vim.keymap.set('n', 'q', '<cmd>close<cr>', { buffer = buf, silent = true })
+  vim.keymap.set('n', '<Esc>', '<cmd>close<cr>', { buffer = buf, silent = true })
+end, { desc = 'Keybindings cheatsheet' })
+
 -- <c-s> saves the buffer, optionally exiting insert mode too
 vim.keymap.set('n', '<c-s>', ':update<cr>')
 vim.keymap.set('i', '<c-s>', '<c-o>:update<cr><esc>')
@@ -35,6 +111,42 @@ vim.keymap.set('n', '<leader>gw', ':GBrowse<CR>')
 
 -- file browser
 vim.keymap.set('n', '<leader>E', ':Neotree reveal<cr>')
+
+-- AI coding layout: left=editor, right-top=claude, right-bottom=codex
+vim.keymap.set('n', '<leader>ai', function()
+  vim.cmd('vsplit')           -- split vertical, move to right pane
+  vim.cmd('terminal claude')  -- open claude in terminal
+  vim.cmd('split')            -- split horizontal, move to bottom pane
+  vim.cmd('terminal codex')   -- open codex in terminal
+  vim.cmd('wincmd h')         -- return to left pane
+end, { desc = 'AI layout: claude + codex' })
+
+-- [Y]ank path
+vim.keymap.set('n', '<leader>yp', function()
+  vim.fn.setreg('+', vim.fn.expand('%'))
+end, { desc = '[Y]ank relative [p]ath' })
+
+vim.keymap.set('n', '<leader>yP', function()
+  vim.fn.setreg('+', vim.fn.expand('%:p'))
+end, { desc = '[Y]ank full [P]ath' })
+
+vim.keymap.set('n', '<leader>yl', function()
+  vim.fn.setreg('+', vim.fn.expand('%') .. ':' .. vim.fn.line('.'))
+end, { desc = '[Y]ank path with [l]ine' })
+
+vim.keymap.set('v', '<leader>yl', function()
+  local start_line = vim.fn.line('v')
+  local end_line = vim.fn.line('.')
+  if start_line > end_line then
+    start_line, end_line = end_line, start_line
+  end
+  vim.fn.setreg('+', vim.fn.expand('%') .. ':' .. start_line .. '-' .. end_line)
+end, { desc = '[Y]ank path with [l]ine range' })
+
+-- [C]ode [F]ormat (using conform.nvim)
+vim.keymap.set({'n', 'v'}, '<leader>cf', function()
+  require('conform').format({ async = true, lsp_fallback = true })
+end, { desc = '[C]ode [F]ormat' })
 
 -- telescope = [S]earch
 -- See `:help telescope.builtin`
