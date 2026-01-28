@@ -370,28 +370,6 @@ local servers = {
       },
     },
   },
-  pylsp = {
-    -- Python LSP with rope for auto-imports
-    settings = {
-      pylsp = {
-        plugins = {
-          -- Disable overlapping features (let pyright handle these)
-          pycodestyle = { enabled = false },
-          mccabe = { enabled = false },
-          pyflakes = { enabled = false },
-          pylint = { enabled = false },
-          yapf = { enabled = false },
-          autopep8 = { enabled = false },
-          -- Enable rope for auto-imports and refactoring
-          rope_autoimport = {
-            enabled = true,
-            memory = true,
-          },
-          rope_completion = { enabled = true },
-        },
-      },
-    },
-  },
 }
 
 -- Setup neovim lua configuration

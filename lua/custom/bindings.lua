@@ -13,6 +13,7 @@ vim.keymap.set('n', '<leader>?', function()
     ' <leader>rn rename    <leader>ca code action',
     ' <leader>cf format    <leader>D  type def',
     ' <leader>ds doc symbols  <leader>ws workspace symbols',
+    ' <C-o> go back     <C-i> go forward',
     '',
     ' Diagnostics ─────────────────────',
     ' [d / ]d  prev/next diagnostic',
