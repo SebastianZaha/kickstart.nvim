@@ -3,6 +3,10 @@ local M = {}
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(client, bufnr, attach_opts)
+  if not client then
+    return
+  end
+
   require('lsp_compl').attach(client, bufnr, attach_opts)
 
   -- Disable LSP syntax highlighting, we use Treesitter

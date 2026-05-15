@@ -388,22 +388,13 @@ mason_lspconfig.setup {
 
 -- Setup each LSP server using the new vim.lsp.config API
 for server_name, server_config in pairs(servers) do
-  local config = vim.tbl_extend('force', {
-    name = server_name,
-    cmd = vim.lsp.config[server_name] and vim.lsp.config[server_name].cmd or { server_name },
-    root_markers = vim.lsp.config[server_name] and vim.lsp.config[server_name].root_markers or { '.git' },
+  local config = vim.tbl_deep_extend('force', {
     capabilities = capabilities,
+    on_attach = require('custom.lsp').on_attach,
   }, server_config)
 
-  vim.lsp.config[server_name] = config
-
-  vim.api.nvim_create_autocmd('FileType', {
-    pattern = config.filetypes or vim.lsp.config[server_name].filetypes or {},
-    callback = function(args)
-      vim.lsp.enable(server_name)
-      require('custom.lsp').on_attach(vim.lsp.get_clients({ bufnr = args.buf, name = server_name })[1], args.buf)
-    end,
-  })
+  vim.lsp.config(server_name, config)
+  vim.lsp.enable(server_name)
 end
 
 -- [[ Configure nvim-cmp ]]
